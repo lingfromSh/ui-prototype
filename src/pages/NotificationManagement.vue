@@ -8,7 +8,7 @@ const props = withDefaults(
   }>(),
   {
     notifications: () => [],
-  }
+  },
 );
 
 const emit = defineEmits<{
@@ -57,7 +57,7 @@ const filteredNotifications = computed(() => {
 const isAllSelected = computed(() => {
   if (filteredNotifications.value.length === 0) return false;
   return filteredNotifications.value.every((n) =>
-    selectedNotificationIds.value.has(n.id)
+    selectedNotificationIds.value.has(n.id),
   );
 });
 
@@ -65,7 +65,7 @@ const isAllSelected = computed(() => {
 const isIndeterminate = computed(() => {
   if (filteredNotifications.value.length === 0) return false;
   const selectedCount = filteredNotifications.value.filter((n) =>
-    selectedNotificationIds.value.has(n.id)
+    selectedNotificationIds.value.has(n.id),
   ).length;
   return (
     selectedCount > 0 && selectedCount < filteredNotifications.value.length
@@ -75,7 +75,7 @@ const isIndeterminate = computed(() => {
 // 选中的未读通知数量
 const selectedUnreadCount = computed(() => {
   return filteredNotifications.value.filter(
-    (n) => selectedNotificationIds.value.has(n.id) && !n.isRead
+    (n) => selectedNotificationIds.value.has(n.id) && !n.isRead,
   ).length;
 });
 
@@ -325,6 +325,15 @@ watch(isIndeterminate, (newValue) => {
                   >
                     全部已读
                   </button>
+
+                  <!-- 设为已读按钮 -->
+                  <button
+                    @click="markSelectedAsRead"
+                    v-if="selectedUnreadCount > 0"
+                    class="flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                  >
+                    <span>设为已读 ({{ selectedUnreadCount }})</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -363,10 +372,10 @@ watch(isIndeterminate, (newValue) => {
                       selectedNotification?.id === notification.id
                         ? 'bg-blue-50 border-blue-500'
                         : selectedNotificationIds.has(notification.id)
-                        ? 'bg-blue-50 border-blue-500'
-                        : !notification.isRead
-                        ? 'bg-white border-transparent hover:bg-gray-50'
-                        : 'bg-white border-transparent hover:bg-gray-50',
+                          ? 'bg-blue-50 border-blue-500'
+                          : !notification.isRead
+                            ? 'bg-white border-transparent hover:bg-gray-50'
+                            : 'bg-white border-transparent hover:bg-gray-50',
                     ]"
                   >
                     <div class="flex items-start space-x-3">
@@ -412,33 +421,6 @@ watch(isIndeterminate, (newValue) => {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              <!-- 设为已读按钮（当有选中项时显示） -->
-              <div
-                v-if="selectedUnreadCount > 0"
-                class="px-4 py-3 border-t border-gray-200 bg-gray-50"
-              >
-                <button
-                  @click="markSelectedAsRead"
-                  class="w-full flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-green-600 bg-green-50 border border-green-200 rounded-md hover:bg-green-100 transition-colors"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M5 13l4 4L19 7"
-                    />
-                  </svg>
-                  <span>设为已读 ({{ selectedUnreadCount }})</span>
-                </button>
               </div>
             </div>
           </div>
